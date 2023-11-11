@@ -1,8 +1,8 @@
 # FTB_Quests_Translate
-minecraftの主にmodpackで使われるftbquestsの文字をgoogletranslatorで日本語を追加します。
+## minecraftの主にmodpackで使われるftbquestsの文字をgoogletranslatorで日本語を追加します。
 ![image](https://github.com/58jpygoma/FTB_Quests_Translate/assets/140223889/8cba641a-8b8d-4fd4-8066-268f65a67a14)
 
-#使い方
+# 使い方
 
 - 配布されているexeファイルを"mod pack name"\config\ftbquests\questsに配置
 - chaptersフォルダがあることを確認して以下のいずれかの方法でexeファイルを実行
