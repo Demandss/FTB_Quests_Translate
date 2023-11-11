@@ -14,12 +14,13 @@ translator = GoogleTranslator(source='en', target='ja')
 
 # 書き換えたい項目を追加するときはここに従って追加する。
 # 正規表現による検索条件
-pattern = r'(description|subtitle):\s*\[([^\]]*)\]'
+desc_pattern = r'description:\s*\[([^\]]*)\]'
+sub_pattern = r'subtitle:\s*"(.*)'
 
 # 置換する関数
-def replace_function(match):
+def replace_desc(match):
     # マッチした部分を取得し、カンマで分割してリストに変換
-    text_list = [text.replace("\t","").strip('"') for text in match.group(2).split('\n')]
+    text_list = [text.replace("\t","").strip('"').strip("'") for text in match.group(1).split('\n')]
     translate_list =[]
     for eng in text_list:
         ja = ""
@@ -27,7 +28,18 @@ def replace_function(match):
         translate_list.extend([ja,eng])
     
     # 新しいテキスト
-    new_text = f'{match.group(1)}: [' + ''.join(f'"{new_text}"\n' for new_text in translate_list) + ']'
+    new_text = f'description: [' + ''.join(f'"{new_text}"\n' for new_text in translate_list) + ']'
+    
+    return new_text
+def replace_sub(match):
+    # マッチした部分を取得し、カンマで分割してリストに変換
+    eng = match.group(1).replace("\t","").strip('"').strip("'")
+
+    ja = translator.translate(eng)
+
+    
+    # 新しいテキスト
+    new_text = f'subtitle: "{ja} {eng}"'
     
     return new_text
 
@@ -41,7 +53,8 @@ for snbt_file in snbt_files:
         content = file.read()
 
     # マッチした部分を置換
-    result_text = re.sub(pattern, replace_function, content)
+    desc_text = re.sub(desc_pattern, replace_desc, content)
+    result_text = re.sub(sub_pattern, replace_sub, desc_text)
 
     # フォルダが存在しない場合は作成
     if not os.path.exists(f"changed_{folder_path}"):
