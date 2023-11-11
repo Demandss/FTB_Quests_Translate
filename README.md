@@ -7,6 +7,5 @@
 - 配布されているexeファイルを"mod pack name"\config\ftbquests\questsに配置
 - chaptersフォルダがあることを確認して以下のいずれかの方法でexeファイルを実行
   - ファイルをダブルクリック
-  - エクスプローラのパス入力欄にcmdと入力しコマンドプロンプトを立ち上げ、ftbQuestsTranslator.exeと入力
 - chaptersをバックアップして（別名にして）生成されたchanged_chaptersをchaptersに名前変更
 - modpackを開いて確認する。
