@@ -23,10 +23,16 @@ def replace_desc(match):
     text_list = [text.replace("\t","")[1:-1] for text in match.group(1).split('\n')]
     translate_list =[]
     for eng in text_list:
-        if eng and eng[0]=="{" and eng[-1]=="}":#画像の場合
-            ja = ""
-        else:#画像でない場合
-            ja = translator.translate(eng).replace("'","").replace('"',"").replace("\\","")
+        ja = ""
+        if eng:#空の文字列でない場合
+            if eng[0]=="{" and eng[-1]=="}":#画像の場合
+                pass
+            else:#画像でない場合
+                ja = translator.translate(eng)
+                if isinstance(ja, str):
+                    ja = ja.replace("'", "").replace('"', "").replace("\\", "")
+                print(f"    eng:{eng}")
+                print(f"    ja:{ja}")
         translate_list.extend([ja,eng])
     
     # 新しいテキスト
@@ -47,6 +53,7 @@ def replace_sub(match):
 
 for snbt_file in snbt_files:
 # ファイルのパス
+    print(snbt_file)
     file_path = rf"{folder_path}/{snbt_file}"
 
     # ファイルの読み取り
