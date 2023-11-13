@@ -20,7 +20,7 @@ sub_pattern = r'subtitle:\s*"(.*)'
 # 置換する関数
 def replace_desc(match):
     # マッチした部分を取得し、カンマで分割してリストに変換
-    text_list = [text.replace("\t","").strip('"').strip("'") for text in match.group(1).split('\n')]
+    text_list = [text.replace("\t","")[1:-1] for text in match.group(1).split('\n')]
     translate_list =[]
     for eng in text_list:
         ja = ""
@@ -33,7 +33,7 @@ def replace_desc(match):
     return new_text
 def replace_sub(match):
     # マッチした部分を取得し、カンマで分割してリストに変換
-    eng = match.group(1).replace("\t","").strip('"').strip("'")
+    eng = match.group(1).replace("\t","")[1:-1]
 
     ja = translator.translate(eng)
 
