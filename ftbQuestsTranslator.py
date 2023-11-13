@@ -15,7 +15,7 @@ translator = GoogleTranslator(source='en', target='ja')
 # 書き換えたい項目を追加するときはここに従って追加する。
 # 正規表現による検索条件
 desc_pattern = r'description:\s*\[([^\]]*)\]'
-sub_pattern = r'subtitle:\s*"(.*)'
+sub_pattern = r'subtitle:\s*(.*)'
 
 # 置換する関数
 def replace_desc(match):
@@ -23,8 +23,10 @@ def replace_desc(match):
     text_list = [text.replace("\t","")[1:-1] for text in match.group(1).split('\n')]
     translate_list =[]
     for eng in text_list:
-        ja = ""
-        ja = translator.translate(eng)
+        if eng and eng[0]=="{" and eng[-1]=="}":#画像の場合
+            ja = ""
+        else:#画像でない場合
+            ja = translator.translate(eng).replace("'","").replace('"',"").replace("\\","")
         translate_list.extend([ja,eng])
     
     # 新しいテキスト
@@ -35,7 +37,7 @@ def replace_sub(match):
     # マッチした部分を取得し、カンマで分割してリストに変換
     eng = match.group(1).replace("\t","")[1:-1]
 
-    ja = translator.translate(eng)
+    ja = translator.translate(eng).translate(eng).replace("'","").replace('"',"").replace("\\","")
 
     
     # 新しいテキスト
