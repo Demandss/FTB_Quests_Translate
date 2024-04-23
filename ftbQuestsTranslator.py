@@ -10,12 +10,11 @@ files = os.listdir(folder_path)
 snbt_files = [file for file in files if file.endswith(".snbt")]
 
 # 翻訳エンジンを選択
-translator = GoogleTranslator(source='en', target='ja')
+translator = GoogleTranslator(source='en', target='ru')
 
 # 書き換えたい項目を追加するときはここに従って追加する。
 # 正規表現による検索条件
 desc_pattern = r'description:\s*\[([^\]]*)\]'
-sub_pattern = r'subtitle:\s*(.*)'
 
 # 置換する関数
 def replace_desc(match):
@@ -23,31 +22,27 @@ def replace_desc(match):
     text_list = [text.replace("\t","")[1:-1] for text in match.group(1).split('\n')]
     translate_list =[]
     for eng in text_list:
-        ja = ""
+        ru = ""
         if eng:#空の文字列でない場合
             if eng[0]=="{" and eng[-1]=="}":#画像の場合
                 pass
             else:#画像でない場合
-                ja = translator.translate(eng)
-                if isinstance(ja, str):
-                    ja = ja.replace("'", "").replace('"', "").replace("\\", "")
-                print(f"    eng:{eng}")
-                print(f"    ja:{ja}")
-        translate_list.extend([ja,eng])
+                ru = translator.translate(eng)
+
+        translate_list.extend([ru])
+
+    if translate_list[0] == "":
+        translate_list.pop(0)
+
+    translate_list_size = len(translate_list) - 1
+
+    if translate_list[translate_list_size] == "":
+        translate_list.pop(translate_list_size)
     
     # 新しいテキスト
-    new_text = f'description: [' + ''.join(f'"{new_text}"\n' for new_text in translate_list) + ']'
-    
-    return new_text
-def replace_sub(match):
-    # マッチした部分を取得し、カンマで分割してリストに変換
-    eng = match.group(1).replace("\t","")[1:-1]
+    new_text = f'description: [' + ''.join(f'\n"{new_text}"' for new_text in translate_list) + ']'
 
-    ja = translator.translate(eng).translate(eng).replace("'","").replace('"',"").replace("\\","")
-
-    
-    # 新しいテキスト
-    new_text = f'subtitle: "{ja} {eng}"'
+    print(f"    text:{new_text}")
     
     return new_text
 
@@ -63,17 +58,12 @@ for snbt_file in snbt_files:
 
     # マッチした部分を置換
     desc_text = re.sub(desc_pattern, replace_desc, content)
-    result_text = re.sub(sub_pattern, replace_sub, desc_text)
 
     # フォルダが存在しない場合は作成
     if not os.path.exists(f"changed_{folder_path}"):
         os.makedirs(f"changed_{folder_path}")
 
-
     # 書き込みモードでファイルを開く
     with open(f"changed_{file_path}", "w", encoding="utf-8") as output_file:
         # 修正されたテキストをファイルに書き込む
-        output_file.write(result_text)
-
-
-
+        output_file.write(desc_text)
