@@ -30,14 +30,6 @@ def replace_desc(match):
                 ru = translator.translate(eng)
 
         translate_list.extend([ru])
-
-    if translate_list[0] == "":
-        translate_list.pop(0)
-
-    translate_list_size = len(translate_list) - 1
-
-    if translate_list[translate_list_size] == "":
-        translate_list.pop(translate_list_size)
     
     # 新しいテキスト
     new_text = f'description: [' + ''.join(f'\n"{new_text}"' for new_text in translate_list) + ']'
